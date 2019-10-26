@@ -1,0 +1,247 @@
+<script src="../static/js/details.js"></script>
+<?php
+require '../lib/db.php';
+$id=$_GET['gid'];
+$sql="select * from goods where gid='$id'";
+$data=$mysqli->query($sql)->fetch_assoc();
+?>
+<link rel="stylesheet" href="../static/css/idangerous.swiper.css">
+<link rel="stylesheet" href="../static/css/details.css">
+<title>产品详情页面</title>
+ <div style="clear: both;"></div>
+<!--详情页面最大盒子开始-->
+<div class="details-MaxBox">
+<!--  992px width 时  红色下拉条 最大div  开始  -->
+    <div class="pull-down-strip col-md-12 col-sm-12" style="display: none;">
+        <a href="javascript:void(0);" class="pull-a-box">
+            <span class="span-left">
+                  KITTI 优质单人/双人床 纯棉套装
+            </span>
+
+
+            <span class="span-right">
+                <i class="iconfont icon-xiangxia1"></i>
+            </span>
+        </a>
+        <a href="javascript:void(0);" class="pull-a-box">
+            <span class="sapn-return">返回</span>
+        </a>
+
+
+        <!--  单击事件绑定的下拉条  开始  -->
+        <div class="selection-box">
+            <ul class="selection-ul">
+                <li class="selection-li">
+                    <a href="javascrilt:void(0);">
+                        首页
+                    </a>
+
+                </li>
+
+                <li class="selection-li">
+                    <a href="javascrilt:void(0);">产品中心</a>
+
+                </li>
+                <li class="selection-li">
+                    <a href="javascrilt:void(0);"> 服务项目</a>
+
+                </li>
+                <li class="selection-li">
+                    <a href="javascrilt:void(0);"> 新闻咨询</a>
+
+                </li>
+                <li class="selection-li">
+                    <a href="javascrilt:void(0);"> 关于我们</a>
+
+                </li>
+            </ul>
+        </div>
+        <!--  单击事件绑定的下拉条  结束  -->
+    </div>
+   <div style="clear: both;"></div>
+
+    <!--  992px width 时  红色下拉条 最大div  结束  -->
+<!--导航栏底部图片开始-->
+<div class="head-bottom-image col-md-12 col-sm-12">
+
+</div>
+<!--导航栏底部图片结束-->
+<div class="container">
+    <div class="row">
+<!--详情页主体开始  details-subject -->
+<div class="details-subject  col-md-12 col-sm-12">
+<!-- 详情页 产品详情 产品标题  开始 -->
+    <div class="details-head-name">
+<!--     商品标题开始   -->
+         <div class="details-head-title">
+               <div class="details-head-title-inside">
+<!--           标题栏标题   文字        -->
+                   <h1>
+                       <div class="details-head-title-font">
+                           <?php echo $data['gname'];?>
+                       </div>
+                   </h1>
+               </div>
+         </div>
+        <!--     商品标题结束   -->
+    </div>
+    <!-- 详情页 产品详情 产品标题  结束 -->
+    <!-- <div style="clear: both; height: 10px; width: 100%; background-color: rebeccapurple;"></div> -->
+<!--    详情页  产品详情  产品展示 最大盒子开始-->
+    <div class="details-display-box">
+        <div class="max-box">
+
+        <div class="column_inner-left col-md-5 col-sm-12">
+            <div class="pc-slide">
+                <div class="view">
+                    <div class="swiper-container">
+                        <a class="arrow-left" href="#"></a>
+                        <a class="arrow-right" href="#"></a>
+                        <div class="swiper-wrapper">
+                            <?php
+            $arr=explode(',',$data['gbanner']);
+            foreach($arr as $key=>$val){
+                            ?>
+                            <div class="swiper-slide">
+                               <img src="<?php echo $val ?>" alt="">
+                            </div>
+                            <?php
+            }
+            ?>
+                            <!--<div class="swiper-slide">-->
+                                <!--<a href="http://bbs.swiper.com.cn/forum.php?mod=viewthread&tid=1598&extra=" target="_blank"><img src="../static/image/list/1-1.jpg" alt=""></a>-->
+                            <!--</div>-->
+                            <!--<div class="swiper-slide">-->
+                                <!--<a href="http://bbs.swiper.com.cn/forum.php?mod=viewthread&tid=1598&extra=" target="_blank"><img src="../static/image/list/1-2.jpg" alt=""></a>-->
+                            <!--</div>-->
+                            <!--<div class="swiper-slide">-->
+                                <!--<a href="http://bbs.swiper.com.cn/forum.php?mod=viewthread&tid=1598&extra=" target="_blank"><img src="../static/image/list/1-3.jpg" alt=""></a>-->
+                            <!--</div>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="preview">
+                    <a class="arrow-left" href="#"></a>
+                    <a class="arrow-right" href="#"></a>
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            <?php
+            $arr=explode(',',$data['gbanner']);
+
+            foreach($arr as $key=>$val){
+                            ?>
+                            <div class="swiper-slide">
+                                <img src="<?php echo $val ?>" alt="">
+                            </div>
+                            <?php
+            }
+            ?>
+                            <!--<div class="swiper-slide">-->
+                                <!--<img src="../static/image/list/1-1.jpg" alt="">-->
+                            <!--</div>-->
+                            <!--<div class="swiper-slide">-->
+                                <!--<img src="../static/image/list/1-2.jpg" alt="">-->
+                            <!--</div>-->
+                            <!--<div class="swiper-slide slide6">-->
+                                <!--<img src="../static/image/list/1-3.jpg" alt="">-->
+                            <!--</div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+<!--        产品简介  开始-->
+        <div class="column_inner-right">
+            <div class="column_inner-right-content">
+                  <div class="right-content-fontbox">
+<!--        文字              -->
+                      <span class="market-price">
+                          市场价：￥<?php echo $data['mprice'];?>
+                      </span>
+                  </div>
+                <div class="right-content-fontbox">
+
+                </div>
+                <div class="right-content-fontbox  borders-bottom">
+                   <span class="retail-price-name">
+                       零售价：
+                   </span>
+                    <span class="retail-price">
+                        <strong>￥<?php echo $data['sprice'];?></strong>
+
+                    </span>
+                </div>
+<!--                <div class="right-content-fontbox fontbox-border">-->
+
+<!--                </div>-->
+                <div class="right-content-fontbox">
+
+                </div>
+                <div class="fontbox-Inventory-status">
+                    <span>
+                        库存：<?php echo $data['gstock'];?>
+                    </span>
+                </div>
+                <div style="clear: both"></div>
+            </div>
+            <div style="clear: both"></div>
+        </div>
+        <div style="clear: both;"></div>
+        </div>
+        <!-- <div style="clear: both;"></div> -->
+        <!--    空白块  用于清除浮动    -->
+        <!-- <div style="clear: both"></div> -->
+    <!--    详情页  产品详情  产品展示 结束-->
+<!--    详情页  产品详情   商品介绍开始    -->
+        <div class="product-introduction-box">
+<!--     商品介绍标题部分   开始      -->
+            <div class="product-introduction-font">
+               <span>
+                   商品介绍
+               </span>
+            </div>
+            <!--     商品介绍标题部分   结束      -->
+            <div style="clear: both;"></div>
+<!--      商品介绍 文字叙述部分 开始      -->
+            <div class="font-describe" >
+               <div class="font-first">
+                   <span style="display:block;">
+                       <?php echo $data['gdetail']?>
+                   </span>
+            </div>
+                <div class="font-message">
+
+                </div>
+                <div style="clear: both;"></div>
+<!--        文字描述的第二段        -->
+                <div class="font-Second" >
+                   <span style="display:block;">
+                       反正就是好用
+                   </span>
+                </div>
+                
+            </div>
+            <div style="clear: both;"></div>
+            <!--      商品介绍 文字叙述部分 结束      -->
+            </div>
+            
+        </div>
+</div>
+
+<!--详情页面最大盒子结束-->
+</div>
+
+    <div class="bottom-box col-md-12 col-sm-12" style="display: none;">
+        <div class="col-md-12 col-sm-12">
+         <span>在线预约</span>
+        </div>
+    </div>
+        </div>
+       
+    </div>
+    <!-- plublic -->
+<script src="../static/js/idangerous.swiper.min.js"></script>
+<!--<script src="../static/js/details.js"></script>-->
+
+

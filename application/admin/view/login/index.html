@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MSC登录界面</title>
+    <link rel="stylesheet" href="/tp-home/public/static/css/layui.css">
+    <script src="/tp-home/public/static/layui.js"></script><!--//模块化的方式-->
+    <style>
+        body {
+            background-image: url('/tp-home/public/static/images/backg02.jpg');
+            background-repeat: no-repeat;
+        }
+
+        form {
+            width: 300px;
+            margin-right: 0;
+        }
+
+        .layui-card-header {
+            text-align: center;
+            background-color: rgba(223, 240, 216, 1);
+        }
+
+        .layui-btn:hover {
+            color: #333;
+        }
+
+        .layui-btn {
+            border-radius: 4px;
+            color: #333;
+            background-color: rgba(223, 240, 216, 1);
+
+        }
+
+        .layui-form-label {
+            width: 50px;
+
+        }
+
+        .layui-card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+
+        }
+
+        .layui-card-body {
+            padding-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="layui-card">
+    <div class="layui-card-header">后台管理员登录页面</div>
+    <div class="layui-card-body">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="username" required lay-verify="required" placeholder="用户名"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="password" required lay-verify="required" placeholder="密码"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">验证码</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="captcha" required lay-verify="required" placeholder="验证码"
+                           autocomplete="off" class="layui-input">
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline">
+                    <div><img src="{:captcha_src()}" width="190" height="38" alt="captcha"
+                              onclick="this.src=this.src+'?a='+Date.now()"/></div>
+                    <!--//加查询字符串是为了怕服务器认为发送的是同一个请求（地址一样）-->
+                    <!--，加上时间戳的查询字符串，保证每次发的地址看起来不一样-->
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即登录</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form'], function () {
+        let form = layui.form, $ = layui.$, layer = layui.layer;//layer是弹出层
+        //表单验证
+        // form.verify({
+        //     nname: function(value, item){ //value：表单的值、item：表单的DOM对象
+        //         if(!new RegExp("^[\u4E00-\u9FA5]{2,5}$").test(value)){
+        //             return '只能输入5个以下的中文';
+        //         }
+        //     },
+        //     // enname:function (value,item) {
+        //     //     if(!/^[a-zA-Z][a-zA-Z\s]{1,49}$/.test(value)){
+        //     //         return '请输入英文格式';
+        //     //     }
+        //     // },
+        //     enname:[
+        //         /^[a-zA-Z][a-zA-Z\s]{1,49}$/,'请输入英文格式'    //前面的参数是正确的，后面是不符合条件的提示，跟if方式相反
+        //     ],
+        //
+        // });
+        form.on('submit(formDemo)', function (data) {
+            // console.log(data);
+            //要用jquery必须引layui.$
+            $.ajax({
+                url: '/tp-home/public/admin/login/check',
+                data: data.field,
+                type: 'POST',
+                dataType: 'json',
+                success: function (res) {
+                    //这里输出不出来数据，可能是后台有其他的输出语句
+                    if (res.code == 0) {
+                        layer.alert(res.msg, {icon: 1});
+                        location.replace('/tp-home/public/admin/main/index')
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+
+            return false;
+        })
+    });
+</script>
+</body>
+</html>

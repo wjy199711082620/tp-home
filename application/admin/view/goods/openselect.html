@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查看商品</title>
+    <link rel="stylesheet" href="/tp-home/public/static/css/layui.css">
+    <script src="/tp-home/public/static/layui.js"> </script><!--//模块化的方式-->
+</head>
+<body>
+<!--//查看页面-->
+<form action="" class="layui-form">
+  <div class="layui-item">
+      <div class="layui-inline">
+          <label class="layui-form-label">商品分类</label>
+          <div class="layui-input-inline" style="width: 150px;">
+              <select name="cid" lay-verify="">
+                  <option value="00">请选择分类</option>
+                  {volist name="cate" id="vo"}
+                      <option value={$vo.cid}>{$vo.cname}</option>
+                  {/volist}
+
+              </select>
+          </div>
+
+      </div>
+      <div class="layui-inline">
+          <label class="layui-form-label">商品名称</label>
+          <div class="layui-input-inline" style="width: 150px;">
+              <input type="text" name="gname" placeholder="关键字" autocomplete="off" class="layui-input">
+          </div>
+      </div>
+      <div class="layui-inline">
+          <label class="layui-form-label">零售范围</label>
+          <div class="layui-input-inline" style="width: 100px;">
+              <input type="text" name="sprice_min" placeholder="￥" autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-form-mid">-</div>
+          <div class="layui-input-inline" style="width: 100px;">
+              <input type="text" name="sprice_max" placeholder="￥" autocomplete="off" class="layui-input">
+          </div>
+
+      </div>
+      <div class="layui-inline">
+          <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+      </div>
+
+  </div>
+</form>
+<table id="demo" lay-filter="test"></table>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a><!--//通过lay-event表示事件处理的是哪个功能-->
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="titlebanner">
+   {{#
+   let arr=d.gbanner.split(',');
+   arr.forEach(ele=>{ }}
+   <img src="{{ele }}" alt="轮播图">
+   {{# }) }}
+</script>
+<script>
+    const HOSTNAME='/tp-home/public/index.php/'//常量定义的时候尽量 往前放
+    layui.use(['table','layer','form'],function () {
+         let table= layui.table,layer=layui.layer , $=layui.$,form=layui.form;
+         //页数（总数，每页条数）
+        //页码，每页几条
+       let tableIns=table.render({
+             elem:'#demo',
+             url:'/tp-home/public/admin/goods/select',
+             page:true,//开启分页（这里是直接用的layui表格里面集成的分页，它里面也有专门的分页模块）,layui会自动以get方式发送page和limit
+             limit:5,//每页限制的条数
+             cols:[[
+                 {field:'gname', title:'商品名称',},//edit:'text'是开启编辑功能
+                 {field:'cid', title:'商品分类',},//edit:'text'是开启编辑功能
+                 {field:'mprice', title:'市场价格',},
+                 {field:'sprice', title:'零售价',},
+                 {field:'gstock', title:'库存',},
+                 {field:'gthumb', title:'缩略图',templet: function(d){
+            return '<img src="'+d.gthumb+'" alt="缩略图">'
+        }},
+                 {field:'gbanner', title:'轮播图', templet: '#titlebanner'},
+                 {field:'gdetail', title:'详情',},
+                 {fixed: 'right', title:'操作', toolbar: '#barDemo', edit: 'text', width:150}
+                 //toolbar是绑定工具条模板，有三种方式这里采用绑定选择器，上面id=bardemo的是放删除编辑按钮的容器
+             ]],
+
+         });
+         //搜索功能的实现
+        form.on('submit(*)',function (data) {
+            let field = data.field;
+            tableIns.reload({
+                url:HOSTNAME+"admin/goods/select",
+                where:field,//重新渲染的数据
+                page:{
+                    curr:1
+                }
+            });
+
+            return false;
+        });
+        //编辑事件
+        table.on('edit(test)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+            // console.log(obj.value); //得到修改后的值
+            // console.log(obj.field); //当前编辑的字段名
+            // console.log(obj.data); //所在行的所有相关数据
+            let index=layer.open({
+                type:3,
+
+            });
+            // layer.load(2, {time: 10*1000})
+            $.ajax({
+                url:HOSTNAME+'admin/nav/update',
+                type:'POST',
+                dataType:'json',
+                data:{
+                    'id':obj.data.id,//以后这里可以用变量名直接写成变量值的名字，简写
+                    'field': obj.field,
+                    'value':obj.value,
+                },
+                success:function (res) {
+                    if(res.code==200){
+                        layer.close(index);
+                        layer.alert(res.msg,{icon:1});
+                        table.render(null, 'test');
+
+                    }else{
+                        layer.alert(res.msg,{icon:2});
+                    }
+                }
+            })
+        });
+        //添加删除事件
+        table.on('tool(test)',function (obj) {
+            // console.log(obj);输出看一下有data，event，del，update属性
+            var data = obj.data;
+            let nid=data.id;//data中传递不能直接传递nid，因为只是一个值
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    layer.close(index);
+                    $.ajax({
+                        url:HOSTNAME+'admin/nav/delete',
+                        data:{id:nid},
+                        type:'POST',
+                        dataType:'json',
+                        success:function (res) {
+                            if(res.code==200){
+                                layer.alert('恭喜您，删除成功！',{icon:1});
+                                obj.del();
+                                table.render(null, 'test');
+
+                            }else{
+                                layer.alert('亲，请重试',{icon:2});
+                            }
+                        },
+
+                    });
+                });
+            }else if(obj.event === 'edit'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.ename
+                }, function(value, index){
+                    obj.update({
+                        ename: value,
+                    });
+
+                    layer.close(index);
+                    $.ajax({
+                        url:HOSTNAME+'admin/nav/update',
+                        type:'POST',
+                        dataType:'json',
+                        data:{
+                            'id':nid,
+                            'field':'ename',
+                            'value':value,
+                        },
+                        success:function (res) {
+                            if(res.code==200){
+                                layer.alert(res.msg,{icon:1});
+                            }else{
+                                layer.alert(res.msg,{icon:2});
+                            }
+                        }
+                    });
+
+
+
+                });
+
+            }
+        });
+    })
+</script>
+</body>
+</html>

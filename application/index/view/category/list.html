@@ -1,0 +1,76 @@
+<!--<?php-->
+<!--$cate=[['cid'=>0,'cname'=>'全部']];-->
+<!--$sql="select * from categoods order by cid";-->
+<!--//catenav中直接连接数据库了-->
+<!--$cate1=$mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);-->
+<!--$sql="select * from goods";-->
+<!--$all=$mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);-->
+<!--$cate=array_merge($cate,$cate1);-->
+<!--//通过数组的拼接，然后把goods中的数据在加到cate中-->
+<!--$len=count($cate);-->
+<!--for($i=0;$i<$len;$i++){-->
+<!--$item=$cate[$i];-->
+<!--$id=$item['cid'];-->
+<!--if($id==0){-->
+<!--$cate[$i]['goods']=$all;-->
+<!--continue;-->
+<!--}-->
+<!--//下面通过php中过滤筛选同一类别的goods,回调函数的参数操作的就是传入的数组-->
+<!--$goods=array_filter($all,function ($arr) use($id){-->
+<!--return $arr['cid']==$id;-->
+
+<!--});-->
+<!--$cate[$i]['goods']=$goods;-->
+<!--}-->
+<!--?>-->
+{include file='public/header'}
+<title>产品中心</title>
+<link rel="stylesheet" href="__CSS_PATH__list.css">
+<script>
+    $(function () {
+        $(".ser-list").on('click', '.sort', function () {
+            $(this).siblings('.ser-box').show().parentsUntil('ser-item').siblings().find('.ser-box').hide(); //在按钮选中时在下面显示相应的内容，同时隐藏不需要的框架内容
+        })
+        $(".sort").eq(0).click();
+        //获取被按下按钮的索引值，需要注意index是从0开始的
+    });
+</script>
+<!-- main开始 -->
+<div class="main">
+    <div class="info">
+        <section class="img">
+            <div class="container">
+                <div class="img-box">
+                    <img src="__IMG_PATH__newtu/家装banner7.png" alt="">
+                </div>
+            </div>
+        </section>
+        <!--标题开始-->
+        <div class="title">
+            <div class="tit-left">
+                <span></span>
+            </div>
+            <div class="title-wz">
+
+            </div>
+            <div class="tit-right">
+                <span></span>
+            </div>
+            <!-- </div> -->
+        </div>
+        <!--标题开始-->
+        <!-- 四项服务部分开始 -->
+        <section class="service">
+            <div class="container">
+                <ul class="ser-list">
+                </ul>
+
+
+            </div>
+        </section>
+        <!-- 四项服务部分结束 -->
+    </div>
+</div>
+{include file='public/footer'}
+<!-- main结束 -->
+

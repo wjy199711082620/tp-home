@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>大同大学的CMS的内容管理系统</title>
+    <link rel="stylesheet" href="/tp-home/public/static/css/layui.css">
+    <script src="/tp-home/public/static/layui.js"> </script><!--//模块化的方式-->
+</head>
+<style>
+    .layui-tab{
+        position: relative;
+        width: 100%;
+        height: calc(100% - 20px);
+    }
+    .layui-tab-content{
+        position:absolute;
+        top:41px;
+        bottom: 0;
+        width: 100%;
+    }
+    .layui-tab-content>.layui-tab-item{
+        height: 100%;
+    }
+    iframe{
+        width: 100%;
+        height: 100%;
+    }
+
+
+</style>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">layui 后台布局</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="">控制台</a></li>
+            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="/tp-home/public/static/images/list/{$user['avatar']}" class="layui-nav-img">
+                  {$user['username']}
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">退了</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">导航管理</a>
+                    <dl class="layui-nav-child">
+                        <dd data-id="1-1" data-url="/tp-home/public/admin/nav/openinsert"><a href="javascript:;">添加导航</a></dd>
+                        <dd data-id="1-2" data-url="/tp-home/public/admin/nav/index"><a href="javascript:;">查看导航</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">商品分类</a>
+                    <dl class="layui-nav-child">
+                        <dd data-id="2-1"><a href="javascript:;">查看分类</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">商品管理</a>
+                    <dl class="layui-nav-child">
+                        <dd data-id="3-1" data-url="/tp-home/public/admin/goods/openinsert" ><a href="javascript:;">添加商品</a></dd>
+                        <dd data-id="3-2" data-url="/tp-home/public/admin/goods/openselect"><a href="javascript:;">查看商品</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">新闻管理</a>
+                    <dl class="layui-nav-child">
+                        <dd data-id="3-1" data-url="/tp-home/public/admin/newsopeninsert" ><a href="javascript:;">添加新闻</a></dd>
+                        <dd data-id="3-2" data-url="/tp-home/public/admin/news/openselect"><a href="javascript:;">查看新闻</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;width:100%; height:100%;box-sizing: border-box;">
+            <div class="layui-tab" lay-filter="demo" lay-allowclose="true">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="1-0">网站设置</li>
+
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">内容1</div>
+
+            </div>
+        </div></div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+
+<script>
+    layui.use('element', function(){
+        var element = layui.element ,  $=layui.$ , layer=layui.layer ;
+        $('.layui-nav-item dd').on('click',function () {
+            let tit=$(this).children('a').html();
+            // 第二种方式：let tit=$('a',this).html();
+            let id=this.dataset.id;
+            // 第一种方式
+           //  let len=$(".layui-tab-title li[lay-id="+id+"]").length;
+           //  if(len>0){
+           //     element.tabChange('demo',id );/*demo是上面布局-lay-filter="demo"*/
+           // }else{
+           //     element.tabAdd('demo',{
+           //                     title:tit,
+           //                     content:tit,
+           //                     id:id,
+           //                 }
+           //             )
+           // }
+           //  第二种方式
+            let flag=false;
+           //  let lis=$('.layui-tab-title li');
+           //  for(let i=0;i<lis.length;i++){
+           //      // console.log(lis);
+            //jquery中对查询到的dom集合的处理方式之for循环
+           //     let layid=lis[i].getAttribute('lay-id');
+           //      layid=$(lis[i]).attr('lay-id');
+           //     if(layid==id){
+           //         flag=true;
+           //     }
+           //  }
+            // 第三种方式
+            let lis=$('.layui-tab-title li');
+            let arr=lis.map(function (index,value) {
+                return value.getAttribute('lay-id')
+                //jquery中对查询到的dom集合的处理方式之映射
+            });
+            // console.log(Array.from(lis));
+            // 类数组转为数组的方式一
+            let bool=Array.from(arr).some(ele=>ele==id);
+            // 类数组转为数组的方式二
+            bool=Array.prototype.some.call(arr,ele=>ele==id);
+            if(bool){
+                flag=true;
+            }
+             if(flag){
+                element.tabChange('demo',id );/*demo是上面布局-lay-filter="demo"*/
+             }else{
+                 let urls=this.dataset.url;
+                 element.tabAdd('demo',{
+                                title:tit,
+                                content:`<iframe src="${urls}" frameborder='0'> </iframe>`
+                                ,
+                                id:id,
+                            }
+                        )
+            }
+
+        })
+        
+        
+    });
+
+</script>
+</body>
+</html>

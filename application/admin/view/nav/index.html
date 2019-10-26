@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查看导航</title>
+    <link rel="stylesheet" href="/tp-home/public/static/css/layui.css">
+    <script src="/tp-home/public/static/layui.js"> </script><!--//模块化的方式-->
+</head>
+<body>
+<!--//查看页面-->
+<table id="demo" lay-filter="test"></table>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a><!--//通过lay-event表示事件处理的是哪个功能-->
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+    const HOSTNAME='/tp-home/public/index.php/'//常量定义的时候尽量 往前放
+    layui.use(['table','layer'],function () {
+         let table= layui.table,layer=layui.layer , $=layui.$;
+         table.render({
+             elem:'#demo',
+             url:'/tp-home/public/admin/nav/query',
+             cols:[[
+                 {field:'id', title:'ID'},
+                 {field:'nname', title:'中文名称',edit: 'text'},//edit:'text'是开启编辑功能
+                 {field:'ename', title:'英文名称',edit: 'text' },
+                 {field:'nsort', title:'排序',edit: 'text'},
+                 {field:'ntpl', title:'模板',edit: 'text'},
+                 {fixed: 'right', title:'操作', toolbar: '#barDemo', edit: 'text', width:150}
+                 //toolbar是绑定工具条模板，有三种方式这里采用绑定选择器，上面id=bardemo的是放删除编辑按钮的容器
+             ]],
+
+         });
+         //编辑事件
+        table.on('edit(test)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+            // console.log(obj.value); //得到修改后的值
+            // console.log(obj.field); //当前编辑的字段名
+            // console.log(obj.data); //所在行的所有相关数据
+            let index=layer.open({
+                type:3,
+
+            });
+            // layer.load(2, {time: 10*1000})
+            $.ajax({
+                url:HOSTNAME+'admin/nav/update',
+                type:'POST',
+                dataType:'json',
+                data:{
+                    'id':obj.data.id,//以后这里可以用变量名直接写成变量值的名字，简写
+                    'field': obj.field,
+                    'value':obj.value,
+                },
+                success:function (res) {
+                    if(res.code==200){
+                        layer.close(index);
+                        layer.alert(res.msg,{icon:1});
+                        table.render(null, 'test');
+
+                    }else{
+                        layer.alert(res.msg,{icon:2});
+                    }
+                }
+            })
+        });
+        //添加删除事件
+        table.on('tool(test)',function (obj) {
+            // console.log(obj);输出看一下有data，event，del，update属性
+            var data = obj.data;
+            let nid=data.id;//data中传递不能直接传递nid，因为只是一个值
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    layer.close(index);
+                    $.ajax({
+                        url:HOSTNAME+'admin/nav/delete',
+                        data:{id:nid},
+                        type:'POST',
+                        dataType:'json',
+                        success:function (res) {
+                            if(res.code==200){
+                                layer.alert('恭喜您，删除成功！',{icon:1});
+                                obj.del();
+                                table.render(null, 'test');
+
+                            }else{
+                                layer.alert('亲，请重试',{icon:2});
+                            }
+                        },
+
+                    });
+                });
+            }else if(obj.event === 'edit'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.ename
+                }, function(value, index){
+                    obj.update({
+                        ename: value,
+                    });
+
+                    layer.close(index);
+                    $.ajax({
+                        url:HOSTNAME+'admin/nav/update',
+                        type:'POST',
+                        dataType:'json',
+                        data:{
+                            'id':nid,
+                            'field':'ename',
+                            'value':value,
+                        },
+                        success:function (res) {
+                            if(res.code==200){
+                                layer.alert(res.msg,{icon:1});
+                            }else{
+                                layer.alert(res.msg,{icon:2});
+                            }
+                        }
+                    });
+
+
+
+                });
+
+            }
+        });
+    })
+</script>
+</body>
+</html>
